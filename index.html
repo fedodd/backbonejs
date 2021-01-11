@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link
+      rel="stylesheet"
+      href="node_modules/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>contacts</title>
+  </head>
+  <body>
+    <div class="container"><h1>Contacts list backbone js test</h1></div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Action</th>
+        </tr>
+        <tr>
+          <td><input class="form-control name-input" /></td>
+          <td><input class="form-control phone-input" /></td>
+          <td><button class="btn btn-primary add-contact">Add</button></td>
+        </tr>
+      </thead>
+      <tbody class="contacts-list"></tbody>
+    </table>
+    <script type="text/template" class="contacts-list-template">
+      <td>
+        <span class="name"><%= name %></span>
+      </td>
+      <td>
+        <span class="phone"><%= phone %></span>
+      </td>
+      <td>
+        <button class="btn btn-warning edit-contacts">Edit</button>
+        <button class="btn btn-danger delete-contacts">Delete</button>
+      </td>
+    </script>
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="node_modules/underscore/underscore.js"></script>
+    <script src="node_modules/backbone/backbone.js"></script>
+    <!-- <script src="node_modules/backbone.localstorage/backbone.localStorage.js"></script> -->
+    <script src="index.js"></script>
+  </body>
+</html>
