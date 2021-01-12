@@ -7,31 +7,29 @@ const Contact = Backbone.Model.extend({
 
 // Backbone Collection
 
-const Contacts = Backbone.Collection.extend({});
+const Contacts = Backbone.Collection.extend({
+  // SERVER APIs
+  // url: '#',
+});
 
-// instantiate four Contacts
+// simulate server data:
 
 const contact1 = new Contact({
   name: 'Fedor',
   phone: '+7-999-999-99-99',
 });
-
 const contact2 = new Contact({
   name: 'Ivan',
   phone: '+7-999-999-99-11',
 });
-
 const contact3 = new Contact({
   name: 'Luidmila',
   phone: '+7-999-999-99-22',
 });
-
 const contact4 = new Contact({
   name: 'Uliana',
   phone: '+7-999-999-99-55',
 });
-
-// instantiate a Collection
 
 let contacts = new Contacts([contact1, contact2, contact3, contact4]);
 
@@ -68,18 +66,34 @@ const ContactView = Backbone.View.extend({
     const name = document.querySelector('.name-update').value;
     const phone = document.querySelector('.phone-update').value;
     this.model.set({ name, phone });
-    $('.delete-contact').show();
-    $('.edit-contact').show();
-    this.$('.cancel-contact').hide();
-    this.$('.update-contact').hide();
-    this.$('.name').html(name);
-    this.$('.phone').html(phone);
+
+    // SERVER API
+
+    // this.model.save(null, {
+    //   success: () => {
+    //     console.log('success update');
+    //   },
+    //   error: () => {
+    //     console.log('error update');
+    //   },
+    // });
   },
   cancel: function () {
     contactsView.render();
   },
   delete: function () {
     this.model.destroy();
+
+    // SERVER API
+
+    // this.model.destroy({
+    //   success: () => {
+    //     console.log('succesful delete!');
+    //   },
+    //   error: () => {
+    //     console.log('failed to delete!');
+    //   },
+    // });
   },
   render: function () {
     this.$el.html(this.template(this.model.toJSON()));
@@ -96,6 +110,17 @@ const ContactsView = Backbone.View.extend({
     this.model.on('add', this.render, this);
     this.model.on('change', this.render, this);
     this.model.on('remove', this.render, this);
+
+    // SERVER API
+
+    // this.model.fetch({
+    //   success: function (response) {
+    //     console.log('failed to get contacts!');
+    //   },
+    //   error: () => {
+    //     console.log('failed to get contacts!');
+    //   },
+    // });
   },
   render: function () {
     const self = this;
@@ -113,14 +138,25 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelector('.add-contact').addEventListener('click', () => {
     let nameInputValue = document.querySelector('.name-input').value;
     let phoneInputValue = document.querySelector('.phone-input').value;
+
+    document.querySelector('.name-input').value = '';
+    document.querySelector('.phone-input').value = '';
     const contact = new Contact({
       name: nameInputValue,
       phone: phoneInputValue,
     });
-    contacts.add(contact);
-    document.querySelector('.name-input').value = '';
-    document.querySelector('.phone-input').value = '';
 
-    console.log(contact.toJSON(), nameInputValue);
+    contacts.add(contact);
+
+    // SERVER API
+
+    // contact.save(null, {
+    //   success: () => {
+    //     console.log('success adding');
+    //   },
+    //   error: () => {
+    //     console.log('error adding');
+    //   },
+    // });
   });
 });
