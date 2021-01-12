@@ -43,6 +43,44 @@ const ContactView = Backbone.View.extend({
   initialize: function () {
     this.template = _.template($('.contacts-list-template').html());
   },
+  events: {
+    'click .edit-contact': 'edit',
+    'click .update-contact': 'update',
+    'click .cancel-contact': 'cancel',
+    'click .delete-contact': 'delete',
+  },
+  edit: function () {
+    $('.delete-contact').hide();
+    $('.edit-contact').hide();
+    this.$('.cancel-contact').show();
+    this.$('.update-contact').show();
+
+    const currentName = this.$('.name').html();
+    const currentPhone = this.$('.phone').html();
+    this.$('.name').html(
+      `<input class="form-control name-update" value="${currentName}" />`
+    );
+    this.$('.phone').html(
+      `<input class="form-control phone-update" value="${currentPhone}" />`
+    );
+  },
+  update: function () {
+    const name = document.querySelector('.name-update').value;
+    const phone = document.querySelector('.phone-update').value;
+    this.model.set({ name, phone });
+    $('.delete-contact').show();
+    $('.edit-contact').show();
+    this.$('.cancel-contact').hide();
+    this.$('.update-contact').hide();
+    this.$('.name').html(name);
+    this.$('.phone').html(phone);
+  },
+  cancel: function () {
+    contactsView.render();
+  },
+  delete: function () {
+    this.model.destroy();
+  },
   render: function () {
     this.$el.html(this.template(this.model.toJSON()));
     return this;
@@ -52,9 +90,12 @@ const ContactView = Backbone.View.extend({
 //Backbone View for contacts list
 const ContactsView = Backbone.View.extend({
   model: contacts,
-  el: $('.contacts-list'),
+  el: document.querySelector('.contacts-list'),
   initialize: function () {
+    this.render();
     this.model.on('add', this.render, this);
+    this.model.on('change', this.render, this);
+    this.model.on('remove', this.render, this);
   },
   render: function () {
     const self = this;
@@ -68,13 +109,18 @@ const ContactsView = Backbone.View.extend({
 
 const contactsView = new ContactsView();
 
-$(document).ready(function () {
-  $('.add-contact').on('click', function () {
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelector('.add-contact').addEventListener('click', () => {
+    let nameInputValue = document.querySelector('.name-input').value;
+    let phoneInputValue = document.querySelector('.phone-input').value;
     const contact = new Contact({
-      name: $('.name-input').val(),
-      phone: $('.phone-input').val(),
+      name: nameInputValue,
+      phone: phoneInputValue,
     });
     contacts.add(contact);
-    console.log(contact.toJSON());
+    document.querySelector('.name-input').value = '';
+    document.querySelector('.phone-input').value = '';
+
+    console.log(contact.toJSON(), nameInputValue);
   });
 });
