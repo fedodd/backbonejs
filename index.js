@@ -31,6 +31,34 @@ const contact4 = new Contact({
   phone: '+7-999-999-99-55',
 });
 
+function validate(values, errorNodes) {
+  const { name, phone } = values;
+  const { errorName, errorPhone } = errorNodes;
+  const errors = {};
+
+  if (!name) {
+    errorName.show();
+    errorName.text('Please enter name');
+    errors.name = true;
+  } else {
+    errorName.hide();
+  }
+
+  if (!phone) {
+    errorPhone.show();
+    errorPhone.text('Please enter phone');
+    errors.phone = true;
+  } else if (!phone.match(/^[+]{0,1}[-\s\.0-9]*$/)) {
+    errorPhone.show();
+    errorPhone.text('Phone is invalid');
+    errors.phone = true;
+  } else {
+    errorPhone.hide();
+  }
+
+  return errors;
+}
+
 let contacts = new Contacts([contact1, contact2, contact3, contact4]);
 
 //Backbone View for one contact
@@ -46,6 +74,10 @@ const ContactView = Backbone.View.extend({
     'click .update-contact': 'update',
     'click .cancel-contact': 'cancel',
     'click .delete-contact': 'delete',
+    invalid: 'invalidIssue',
+  },
+  invalidIssue: function () {
+    console.log('INVALID IN EVENT!!!!');
   },
   edit: function () {
     $('.delete-contact').hide();
@@ -65,7 +97,24 @@ const ContactView = Backbone.View.extend({
   update: function () {
     const name = document.querySelector('.name-update').value;
     const phone = document.querySelector('.phone-update').value;
-    this.model.set({ name, phone });
+
+    const values = {
+      name,
+      phone,
+    };
+
+    const errorNodes = {
+      errorName: this.$('.error-name'),
+      errorPhone: this.$('.error-phone'),
+    };
+
+    const errors = validate(values, errorNodes);
+
+    if (!errors.name && !errors.phone) {
+      console.log('hello!');
+      this.model.set({ name, phone });
+      contactsView.render();
+    }
 
     // SERVER API
 
@@ -95,10 +144,14 @@ const ContactView = Backbone.View.extend({
     //   },
     // });
   },
-  render: function () {
+  render: function (event) {
     this.$el.html(this.template(this.model.toJSON()));
     return this;
   },
+});
+
+contact1.on('invalid', function (model, error) {
+  alert(model.get('title') + ' ' + error);
 });
 
 //Backbone View for contacts list
@@ -107,9 +160,7 @@ const ContactsView = Backbone.View.extend({
   el: document.querySelector('.contacts-list'),
   initialize: function () {
     this.render();
-    this.model.on('add', this.render, this);
-    this.model.on('change', this.render, this);
-    this.model.on('remove', this.render, this);
+    this.model.on('update', this.render, this);
 
     // SERVER API
 
@@ -136,17 +187,28 @@ const contactsView = new ContactsView();
 
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelector('.add-contact').addEventListener('click', () => {
-    let nameInputValue = document.querySelector('.name-input').value;
-    let phoneInputValue = document.querySelector('.phone-input').value;
+    let name = document.querySelector('.name-input').value;
+    let phone = document.querySelector('.phone-input').value;
 
-    document.querySelector('.name-input').value = '';
-    document.querySelector('.phone-input').value = '';
-    const contact = new Contact({
-      name: nameInputValue,
-      phone: phoneInputValue,
-    });
+    const values = {
+      name,
+      phone,
+    };
 
-    contacts.add(contact);
+    const errorNodes = {
+      errorName: $('.error-name-add'),
+      errorPhone: $('.error-phone-add'),
+    };
+
+    const errors = validate(values, errorNodes);
+
+    if (!errors.name && !errors.phone) {
+      const contact = new Contact();
+      contact.set({ name, phone });
+      contacts.add(contact);
+      document.querySelector('.name-input').value = '';
+      document.querySelector('.phone-input').value = '';
+    }
 
     // SERVER API
 

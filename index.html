@@ -5,9 +5,15 @@
       rel="stylesheet"
       href="node_modules/bootstrap/dist/css/bootstrap.min.css"
     />
+    <link rel="stylesheet" href="styles.css" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>contacts</title>
+    <style>
+      .error {
+        color: red;
+      }
+    </style>
   </head>
   <body>
     <div class="container"><h1>Contacts list backbone js test</h1></div>
@@ -23,8 +29,14 @@
         <tbody class="contacts-list"></tbody>
         <tfoot>
           <tr>
-            <td><input class="form-control name-input" /></td>
-            <td><input class="form-control phone-input" /></td>
+            <td>
+              <input class="form-control name-input" />
+              <span class="error error-name-add"></span>
+            </td>
+            <td>
+              <input class="form-control phone-input" />
+              <span class="error error-phone-add"></span>
+            </td>
             <td><button class="btn btn-primary add-contact">Add</button></td>
           </tr>
         </tfoot>
@@ -33,9 +45,11 @@
     <script type="text/template" class="contacts-list-template">
       <td>
         <span class="name"><%= name %></span>
+        <span class="error error-name"></span>
       </td>
       <td>
         <span class="phone"><%= phone %></span>
+        <span class="error error-phone"></span>
       </td>
       <td>
         <button class="btn btn-warning edit-contact">Edit</button>
@@ -47,6 +61,7 @@
     <script src="node_modules/jquery/dist/jquery.js"></script>
     <script src="node_modules/underscore/underscore.js"></script>
     <script src="node_modules/backbone/backbone.js"></script>
+    <script src="node_modules/backbone-validation/dist/backbone-validation-min.js"></script>
     <!-- <script src="node_modules/backbone.localstorage/backbone.localStorage.js"></script> -->
     <script src="index.js"></script>
   </body>
