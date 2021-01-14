@@ -1,3 +1,9 @@
+// I didn't work with backbone before, that's why i started wihout any toolkit, because don't know who's better. The project was already done, when i decided to split code on modules, but it was to late. That's why i didn't make normal structure of project, where views, models, collections - all in different folders. and i decided, if you will take me to your comand, you will show me best practices of code organization in backbone projects:)
+
+// I used jQuery and js code here. i didn't use much css selectors, that's why somewhere it was much easier to use jQuery, for example, with use { this.$() }).
+
+// thanks for your attention.
+
 const Contact = Backbone.Model.extend({
   defaults: {
     name: '',
@@ -6,9 +12,8 @@ const Contact = Backbone.Model.extend({
 });
 
 // Backbone Collection
-
 const Contacts = Backbone.Collection.extend({
-  // SERVER APIs
+  // SERVER API
   // url: '#',
 });
 
@@ -31,6 +36,9 @@ const contact4 = new Contact({
   phone: '+7-999-999-99-55',
 });
 
+// i have some troubles with backbone validate from box, and created my one validate bicycle. I know, it's not good, but it's better, then nothing.
+
+//errorNodes are jquery objects
 function validate(values, errorNodes) {
   const { name, phone } = values;
   const { errorName, errorPhone } = errorNodes;
@@ -74,10 +82,6 @@ const ContactView = Backbone.View.extend({
     'click .update-contact': 'update',
     'click .cancel-contact': 'cancel',
     'click .delete-contact': 'delete',
-    invalid: 'invalidIssue',
-  },
-  invalidIssue: function () {
-    console.log('INVALID IN EVENT!!!!');
   },
   edit: function () {
     $('.delete-contact').hide();
@@ -111,8 +115,8 @@ const ContactView = Backbone.View.extend({
     const errors = validate(values, errorNodes);
 
     if (!errors.name && !errors.phone) {
-      console.log('hello!');
       this.model.set({ name, phone });
+      // set here render for case when name and phone didn't changed, but we need to escape edit after push update button. Maybe better disable update button.
       contactsView.render();
     }
 
@@ -148,10 +152,6 @@ const ContactView = Backbone.View.extend({
     this.$el.html(this.template(this.model.toJSON()));
     return this;
   },
-});
-
-contact1.on('invalid', function (model, error) {
-  alert(model.get('title') + ' ' + error);
 });
 
 //Backbone View for contacts list
